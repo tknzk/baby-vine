@@ -2,11 +2,11 @@
 
 
 $user = 'tkm.knzk@gmail.com';
-$pass = 'xxxxxx';
+$pass = 'vine1123';
 
 $session = login($user, $pass);
 
-$me = call($session, 'users/me');
+//$me = call($session, 'users/me');
 //var_dump($me);
 
 $tag = "baby";
@@ -77,3 +77,12 @@ function logout($session)
 
     return $session;
 }
+?>
+<html>
+<body>
+<?php foreach ($tags['data']['records'] as $tag) : ?>
+<iframe class="vine-embed" src="<?php echo $tag['shareUrl']; ?>/embed/simple" width="600" height="600" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>
+<br />
+<?php endforeach ; ?>
+</body>
+</html>
