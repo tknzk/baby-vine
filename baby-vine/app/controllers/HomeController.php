@@ -30,7 +30,7 @@ class HomeController extends BaseController {
         foreach ($members as $val) {
             $tmp[] = unserialize($val);
         }
-        shuffle($records);
+        shuffle($tmp);
         $i = 0;
         foreach ($tmp as $x) {
             $records[] = $x;
