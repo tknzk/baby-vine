@@ -34,7 +34,7 @@ class HomeController extends BaseController {
         $i = 0;
         foreach ($tmp as $x) {
             $records[] = $x;
-            if ($i > 6) {
+            if ($i >= 5) {
                 break;
             }
             $i++;
