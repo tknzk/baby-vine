@@ -1,0 +1,32 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+	background-color: #ABEAE5;
+	margin: 0px;
+	padding: 0px;
+}
+#container {
+	width: 1200px;
+	margin-right: auto;
+	margin-left: auto;
+	background-color: #fff;
+	margin-top: 0px;
+}
+
+#header {
+	width: 1140px;
+	margin-left: 60px;
+}
+
+
+#content {
+	width: 100%;
+	overflow: hidden;
+	margin-top: 0px;
+}
+
+#block {
+	float: left;
+	margin-left: 60px;
+}
