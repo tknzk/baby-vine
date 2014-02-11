@@ -23,11 +23,21 @@ class HomeController extends BaseController {
         $key    = $config['redis_sets'];
 
         $redis      = Redis::connection();
-        //$members    = $redis->smembers($key);
-        $members    = $redis->srandmember($key, 6);
+        $members    = $redis->smembers($key);
+        //$members    = $redis->srandmember($key, 6);
         $records    = array();
+        $tmp        = array();
         foreach ($members as $val) {
-            $records[] = unserialize($val);
+            $tmp[] = unserialize($val);
+        }
+        shuffle($records);
+        $i = 0;
+        foreach ($tmp as $x) {
+            $records[] = $x;
+            if ($i > 6) {
+                break;
+            }
+            $i++;
         }
 
         $this->layout->header   = View::make('layouts.header',  array());
