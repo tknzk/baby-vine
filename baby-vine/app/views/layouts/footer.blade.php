@@ -1,7 +1,5 @@
 
+<div id="footer">
+  <a href="http://tknzk.com/" target="_blank">©tknzk</a><a href="#" target="_blank"> ->feedback</a>
+</div><!--/footer-->
 
-    <div id="footer">
-      <div class="container">
-        <p>@tknzk &amp; @lumie007</p>
-      </div>
-    </div>

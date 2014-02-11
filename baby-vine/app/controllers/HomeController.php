@@ -24,7 +24,7 @@ class HomeController extends BaseController {
 
         $redis      = Redis::connection();
         //$members    = $redis->smembers($key);
-        $members    = $redis->srandmember($key, 3);
+        $members    = $redis->srandmember($key, 6);
         $records    = array();
         foreach ($members as $val) {
             $records[] = unserialize($val);
@@ -32,13 +32,6 @@ class HomeController extends BaseController {
 
         $this->layout->header   = View::make('layouts.header',  array());
         $this->layout->content  = View::make('layouts.content', array('records' => $records));
-        $this->layout->footer   = View::make('layouts.footer',  array());
-    }
-
-    public function about()
-    {
-        $this->layout->header   = View::make('layouts.header',  array());
-        $this->layout->content  = View::make('layouts.about', array());
         $this->layout->footer   = View::make('layouts.footer',  array());
     }
 }
