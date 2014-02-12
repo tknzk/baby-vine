@@ -43,7 +43,7 @@ class GetMovies extends Command {
          */
         $verbose    = $this->option('vmode');
         $tag        = $this->option('tag');
-        $page       = $this->option('page');
+        $secondtag  = $this->option('second_tag');
 
         $config = Config::get('vine');
 
@@ -52,8 +52,8 @@ class GetMovies extends Command {
         $key        = $config['redis_sets'];
 
         if ($verbose) {
-            $this->comment(sprintf('%-10s : %s', 'tag',     $tag));
-            $this->comment(sprintf('%-10s : %s', 'page',    $page));
+            $this->comment(sprintf('%-10s : %s', 'tag',         $tag));
+            $this->comment(sprintf('%-10s : %s', 'second_tag',  $secondtag));
         }
 
         if ($tag == null) {
@@ -64,17 +64,15 @@ class GetMovies extends Command {
         $session = $this->login($username, $password);
 
         if ($session->success == true) {
+
             // kick api
-            $endpoint   = 'timelines/tags/'. urlencode($tag) . '?' . http_build_query(array('page' => $page));
+            $endpoint   = 'timelines/tags/'. urlencode($tag);
             $results    = $this->kick($session, $endpoint);
             if ($verbose) {
                 $this->comment(sprintf('call api endpoint %s', $endpoint));
             }
 
             if ($results->success == true) {
-
-                $perpage = 20;
-                $maxPage = ceil($results->data->count / $perpage);
 
                 if ($verbose) {
                     $this->comment(sprintf('response count          : %s', $results->data->count));
@@ -83,34 +81,56 @@ class GetMovies extends Command {
                     $this->comment(sprintf('response nextPage       : %s', $results->data->nextPage));
                     $this->comment(sprintf('response anchor         : %s', $results->data->anchor));
                     $this->comment(sprintf('response anchorStr      : %s', $results->data->anchorStr));
-                    $this->comment(sprintf('total page              : %s', $maxPage));
                 }
 
-                $records = array();
-                foreach ($results->data->records as $val) {
-                    $records[] = $val;
-                }
+                if ($results->data->count > 0) {
 
-                for ($i = 2; $i <= $maxPage; $i++) {
-                    $endpoint   = 'timelines/tags/'. urlencode($tag) . '?' . http_build_query(array('page' => $i));
-                    $results    = $this->kick($session, $endpoint);
+                    $perpage = 20;
+                    $maxPage = ceil($results->data->count / $perpage);
+
                     if ($verbose) {
-                        $this->comment(sprintf('call api endpoint %s', $endpoint));
+                        $this->comment(sprintf('total page              : %s', $maxPage));
                     }
+
+                    $records = array();
                     foreach ($results->data->records as $val) {
-                        $records[] = $val;
+                        if ($this->check($val, $secondtag)) {
+                            $records[] = $val;
+                        }
                     }
-                }
 
-                $redis = Redis::connection();
+                    if ($results->data->nextPage) {
 
-                foreach ($records as $val) {
-                    if ($redis->sismember($key, serialize($val))) {
-                        $this->comment(sprintf('already sets  : %s', $val->shareUrl));
-                    } else {
-                        $this->comment(sprintf('add sets  : %s', $val->shareUrl));
-                        $redis->sadd($key, serialize($val));
+                        for ($i = 2; $i <= $maxPage; $i++) {
+                            $endpoint   = 'timelines/tags/'. urlencode($tag) . '?' . http_build_query(array('page' => $i));
+                            $results    = $this->kick($session, $endpoint);
+                            if ($verbose) {
+                                $this->comment(sprintf('call api endpoint %s', $endpoint));
+                            }
+                            foreach ($results->data->records as $val) {
+                                if ($this->check($val, $secondtag)) {
+                                    $records[] = $val;
+                                }
+                            }
+                        }
                     }
+
+                    $redis = Redis::connection();
+
+                    foreach ($records as $val) {
+                        if ($redis->sismember($key, serialize($val))) {
+                            if ($verbose) {
+                                $this->comment(sprintf('already sets  : %s', $val->shareUrl));
+                            }
+                        } else {
+                            if ($verbose) {
+                                $this->comment(sprintf('add sets  : %s', $val->shareUrl));
+                            }
+                            $redis->sadd($key, serialize($val));
+                        }
+                    }
+                } else {
+                    $this->error(sprintf('response data count is zero. please check call api endpoint', $endpoint));
                 }
 
             } else {
@@ -124,14 +144,28 @@ class GetMovies extends Command {
         }
     }
 
-    private function checkNextPage($result)
+    private function check($result)
     {
-        if ($result->data->nextPage) {
-            return true;
+        $verbose    = $this->option('vmode');
+        $secondtag  = $this->option('second_tag');
+        $entities   = $result->entities;
+        if ($secondtag) {
+            foreach ($entities as $entity) {
+                if ($entity->type == 'tag') {
+                    //if ($verbose) {
+                    //    $this->comment(sprintf('entities tag : %s', $entity->title));
+                    //}
+                    if ($entity->title == $secondtag) {
+                        return true;
+                    }
+                }
+            }
         } else {
-            return false;
+            return true;
         }
+        return false;
     }
+
     /**
      * Get the console command arguments.
      *
@@ -154,7 +188,7 @@ class GetMovies extends Command {
         return array(
             array('vmode',      null, InputOption::VALUE_OPTIONAL, 'verbose mode',  false),
             array('tag',        null, InputOption::VALUE_REQUIRED, 'hash tag'),
-            array('page',       null, InputOption::VALUE_REQUIRED, 'page', 1),
+            array('second_tag', null, InputOption::VALUE_REQUIRED, 'second hash tag'),
         );
     }
 
