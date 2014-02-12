@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new GetMovies);
+Artisan::add(new PurgeMovies);
