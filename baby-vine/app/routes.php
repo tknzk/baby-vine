@@ -15,4 +15,7 @@
 //    return View::make('hello');
 //});
 
-Route::get('/',         'HomeController@index');
+Route::get('/',             'HomeController@index');
+Route::get('/lists',        'HomeController@lists');
+Route::get('/api',          'ApiController@index');
+Route::get('/api/lists',    'ApiController@lists');

@@ -1,3 +1,4 @@
+
 <div id="content">
 
     <?php foreach ($records as $val) : ?>
@@ -8,7 +9,6 @@
     </div><!--/block-->
 
     <?php endforeach; ?>
-
 
 </div><!--/content-->
 

@@ -11,7 +11,6 @@
         <br />
         If you wanna post this gallery, please post to vine with this tag #babyvine
     </h2>
-
 </div><!--/header-->
 
 <div id="fb-root"></div>

@@ -1,10 +1,8 @@
 <?php
 
-class HomeController extends BaseController {
+class ApiController extends BaseController {
 
-    protected $layout = 'layouts.index';
-
-    const perpage = 3;
+    const perpage = 2;
 
     /*
     |--------------------------------------------------------------------------
@@ -32,9 +30,15 @@ class HomeController extends BaseController {
             $records[] = unserialize($val);
         }
 
-        $this->layout->header   = View::make('layouts.header',  array());
-        $this->layout->content  = View::make('layouts.content', array('records' => $records));
-        $this->layout->footer   = View::make('layouts.footer',  array());
+        $result = array();
+        foreach ($records as $i => $val) {
+            $result[$i]['shareUrl'] = $val->shareUrl;
+        }
+
+        sleep(1);
+
+        return Response::json($result);
+
     }
 
     public function lists()
@@ -46,8 +50,7 @@ class HomeController extends BaseController {
 
         $redis      = Redis::connection();
 
-        //$members    = $redis->smembers($key);
-        $members    = $redis->srandmember($key, self::perpage);
+        $members    = $redis->smembers($key);
 
         $records    = array();
 
@@ -66,17 +69,11 @@ class HomeController extends BaseController {
             $i++;
         }
 
-        $paginator = Paginator::make($records, count($members), self::perpage);
+        $result = array();
+        foreach ($records as $i => $val) {
+            $result[$i]['shareUrl'] = $val->shareUrl;
+        }
 
-        $assets = array(
-            'records'   => $records,
-            'page'      => $page,
-            'perpage'   => self::perpage,
-            'paginator'   => $paginator,
-        );
-
-        $this->layout->header   = View::make('layouts.header',  array());
-        $this->layout->content  = View::make('layouts.lists',   $assets);
-        $this->layout->footer   = View::make('layouts.footer',  array());
+        return Response::json($result);
     }
 }
