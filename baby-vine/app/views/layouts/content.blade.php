@@ -1,6 +1,8 @@
 
 <div id="content">
 
+    <a href="/lists">lists</a>
+
     <?php foreach ($records as $val) : ?>
 
     <div id="block">

@@ -4,10 +4,10 @@
 
     <?php foreach ($records as $val) : ?>
 
-    <div id="block">
+    <div id="item">
         <iframe class="vine-embed" src="<?php echo $val->shareUrl; ?>/embed/postcard" width="600" height="600" frameborder="0"></iframe>
         <script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>
-    </div><!--/block-->
+    </div><!--/item-->
 
     <?php endforeach; ?>
 
@@ -76,10 +76,10 @@ $(function () {
                                 var res = response[i];
                                 console.log(response[i]);
                                 console.log(res.sharetUrl);
-                                markup += '<div id="block">'
+                                markup += '<div id="item">'
                                         + '<iframe class="vine-embed" src="' + res.shareUrl+'/embed/postcard" width="600" height="600" frameborder="0"></iframe>'
                                         + '<script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"><\/script>'
-                                        + '</div><!--/block-->'
+                                        + '</div><!--/item-->'
                                         + '<div class="clearfix"></div>';
                             };
                             return markup;

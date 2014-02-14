@@ -1,24 +1,24 @@
 @charset "UTF-8";
 /* CSS Document */
 .clearfix:after {
-      content: ".";  /* 新しい要素を作る */
-        display: block;  /* ブロックレベル要素に */
-          clear: both;
-            height: 0;
-              visibility: hidden;
-          }
+    content: ".";  /* 新しい要素を作る */
+    display: block;  /* ブロックレベル要素に */
+    clear: both;
+    height: 0;
+    visibility: hidden;
+}
 
-          .clearfix {
-                min-height: 1px;
-            }
+.clearfix {
+    min-height: 1px;
+}
 
-            * html .clearfix {
-                *   height: 1px;
-                *     /*¥*//*/
-                  height: auto;
-                    overflow: hidden;
-                      /**/
-                }
+* html .clearfix {
+    *   height: 1px;
+    *     /*¥*//*/
+    height: auto;
+    overflow: hidden;
+    /**/
+}
 
 body {
 	background-color: #ABEAE5;
@@ -49,11 +49,13 @@ body {
 }
 
 #block {
-	/**
 	float: left;
-     * margin-left: 60px;
+    margin-left: 60px;
 	margin-top: 10px;
-    */
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+#item {
     margin-left: 300px;
     margin-right: auto;
 	clear: both;
